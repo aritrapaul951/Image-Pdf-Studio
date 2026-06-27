@@ -194,29 +194,24 @@ elif menu == "PDF to Images":
         fmt = st.selectbox("Image Format", ["PNG", "JPEG", "WEBP"])
         zoom = st.slider("Zoom", 1, 3, 2)
 
-        if st.button("Convert"):
+        if pages:
 
-            zip_buffer = BytesIO()
-
-            with zipfile.ZipFile(zip_buffer, "w") as zf:
+            if st.button("Convert"):
 
                 for p in pages:
+
                     page = pdf[p - 1]
                     mat = fitz.Matrix(zoom, zoom)
                     pix = page.get_pixmap(matrix=mat)
 
-                    zf.writestr(
-                        f"page_{p}.{fmt.lower()}",
-                        pix.tobytes(fmt.lower())
+                    img_bytes = pix.tobytes(fmt.lower())
+
+                    st.download_button(
+                        f"Download Page {p}",
+                        img_bytes,
+                        file_name=f"page_{p}.{fmt.lower()}",
+                        mime=f"image/{fmt.lower()}"
                     )
-
-            st.download_button(
-                "Download ZIP",
-                zip_buffer.getvalue(),
-                "pdf_images.zip",
-                mime="application/zip"
-            )
-
 # ================= MERGE PDF =================
 elif menu == "Merge PDF":
 
