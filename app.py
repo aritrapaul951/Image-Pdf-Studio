@@ -38,7 +38,6 @@ st.markdown("""
 <div class="main-title">
     🖼️ Image & PDF Studio 
 </div>
-
 <div class="sub-title">
     Professional Image & PDF Processing Toolkit by Aritra Paul
 </div>
