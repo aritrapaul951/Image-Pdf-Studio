@@ -96,6 +96,38 @@ section[data-testid="stSidebar"] * {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+
+/* FIXED SIDEBAR */
+section[data-testid="stSidebar"] {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+/* MAIN CONTENT SHIFT (important) */
+.block-container {
+    margin-left: 320px;
+    max-width: calc(100% - 320px);
+}
+
+/* optional scrollbar style */
+section[data-testid="stSidebar"]::-webkit-scrollbar {
+    width: 6px;
+}
+
+section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 10px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # ================= HEADER =================
 st.markdown("""
