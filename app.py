@@ -120,7 +120,7 @@ menu = st.selectbox(
     ]
 )
 
-st.markdown("---")
+#st.markdown("---")
 st.info("Fast • Clean • Professional File Tools")
 
 
