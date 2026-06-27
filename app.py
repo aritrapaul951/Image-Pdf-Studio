@@ -88,6 +88,8 @@ st.markdown("""
 <div class="sub-title">
     Professional Image & PDF Processing Toolkit
 </div>
+by Aritra Paul
+</div>
 """, unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
