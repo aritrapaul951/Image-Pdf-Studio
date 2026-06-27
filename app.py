@@ -9,11 +9,11 @@ import fitz
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 # ================= PAGE CONFIG =================
-#st.set_page_config(
-#    page_title="Image & PDF Studio",
-#    page_icon="🖼️",
-#    layout="wide"
-#)
+st.set_page_config(
+    page_title="Image & PDF Studio",
+    page_icon="🖼️",
+    layout="wide"
+)
 
 # ================= SESSION INIT =================
 #if "logged_in" not in st.session_state:
