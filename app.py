@@ -1,5 +1,3 @@
-# app.py
-
 import streamlit as st
 from PIL import Image
 from io import BytesIO
@@ -25,31 +23,22 @@ if "user" not in st.session_state:
     st.session_state.user = ""
 
 
-# ================= LOGIN FUNCTION =================
+# ================= LOGIN PAGE =================
 def login_page():
 
     st.title("🔐 Login System")
 
-    # IMPORTANT: keep stable keys
     username = st.text_input("Username", key="login_user")
     password = st.text_input("Password", type="password", key="login_pass")
 
-    login_btn = st.button("Login", key="login_btn")
+    if st.button("Login"):
 
-    if login_btn:
-
-        # strip prevents hidden space bug
         if username.strip() == "admin" and password.strip() == "1234":
 
             st.session_state.logged_in = True
             st.session_state.user = username
 
-            # clear input after login (important fix)
-            st.session_state.login_user = ""
-            st.session_state.login_pass = ""
-
             st.success("Login successful")
-
             st.rerun()
 
         else:
@@ -94,6 +83,7 @@ menu = st.sidebar.selectbox(
 
 # ================= IMAGE RESIZE =================
 if menu == "Image Resize":
+
     file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
 
     if file:
@@ -113,21 +103,22 @@ if menu == "Image Resize":
 
             img2.save(buf, format=ext)
 
-            st.download_button("Download", buf.getvalue(), f"resized.{ext.lower()}")
+            st.download_button(
+                "Download",
+                buf.getvalue(),
+                f"resized.{ext.lower()}"
+            )
 
-# (rest of your tools remain unchanged)
 # ================= IMAGE COMPRESS =================
 elif menu == "Image Compress":
 
     file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
 
     if file:
-
         img = Image.open(file)
         quality = st.slider("Quality", 10, 100, 70)
 
         if st.button("Compress"):
-
             buf = BytesIO()
             img = img.convert("RGB")
 
@@ -140,19 +131,16 @@ elif menu == "Image Compress":
                 mime="image/jpeg"
             )
 
-
 # ================= IMAGE CONVERT =================
 elif menu == "Image Convert":
 
     file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
 
     if file:
-
         img = Image.open(file)
         fmt = st.selectbox("Output Format", ["PNG", "JPEG", "WEBP"])
 
         if st.button("Convert"):
-
             buf = BytesIO()
 
             if fmt == "JPEG":
@@ -166,7 +154,6 @@ elif menu == "Image Convert":
                 f"converted.{fmt.lower()}"
             )
 
-
 # ================= IMAGES TO PDF =================
 elif menu == "Images to PDF":
 
@@ -178,11 +165,7 @@ elif menu == "Images to PDF":
 
     if files and st.button("Create PDF"):
 
-        images = []
-
-        for f in files:
-            img = Image.open(f).convert("RGB")
-            images.append(img)
+        images = [Image.open(f).convert("RGB") for f in files]
 
         pdf = BytesIO()
         images[0].save(pdf, save_all=True, append_images=images[1:], format="PDF")
@@ -193,7 +176,6 @@ elif menu == "Images to PDF":
             "images.pdf",
             mime="application/pdf"
         )
-
 
 # ================= PDF TO IMAGES =================
 elif menu == "PDF to Images":
@@ -207,56 +189,38 @@ elif menu == "PDF to Images":
         total_pages = pdf.page_count
         st.write(f"Total Pages: {total_pages}")
 
-        pages = st.multiselect(
-            "Select Pages",
-            list(range(1, total_pages + 1))
-        )
+        pages = st.multiselect("Select Pages", list(range(1, total_pages + 1)))
 
         fmt = st.selectbox("Image Format", ["PNG", "JPEG", "WEBP"])
-        zoom = st.slider("Quality (Zoom)", 1, 3, 2)
+        zoom = st.slider("Zoom", 1, 3, 2)
 
         if st.button("Convert"):
-
-            if not pages:
-                st.warning("Select pages first")
-                st.stop()
 
             zip_buffer = BytesIO()
 
             with zipfile.ZipFile(zip_buffer, "w") as zf:
 
                 for p in pages:
-
                     page = pdf[p - 1]
-
                     mat = fitz.Matrix(zoom, zoom)
                     pix = page.get_pixmap(matrix=mat)
 
-                    img_bytes = pix.tobytes(fmt.lower())
-
                     zf.writestr(
                         f"page_{p}.{fmt.lower()}",
-                        img_bytes
+                        pix.tobytes(fmt.lower())
                     )
-
-            zip_buffer.seek(0)
 
             st.download_button(
                 "Download ZIP",
                 zip_buffer.getvalue(),
-                file_name="pdf_images.zip",
+                "pdf_images.zip",
                 mime="application/zip"
             )
-
 
 # ================= MERGE PDF =================
 elif menu == "Merge PDF":
 
-    files = st.file_uploader(
-        "Upload PDFs",
-        type=["pdf"],
-        accept_multiple_files=True
-    )
+    files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
 
     if files and st.button("Merge"):
 
@@ -269,8 +233,7 @@ elif menu == "Merge PDF":
         merger.write(out)
         merger.close()
 
-        st.download_button("Download", out.getvalue(), "merged.pdf", mime="application/pdf")
-
+        st.download_button("Download", out.getvalue(), "merged.pdf")
 
 # ================= SPLIT PDF =================
 elif menu == "Split PDF":
@@ -300,10 +263,8 @@ elif menu == "Split PDF":
             st.download_button(
                 "Download ZIP",
                 zip_buffer.getvalue(),
-                "pages.zip",
-                mime="application/zip"
+                "pages.zip"
             )
-
 
 # ================= ROTATE PDF =================
 elif menu == "Rotate PDF":
@@ -326,8 +287,7 @@ elif menu == "Rotate PDF":
             out = BytesIO()
             writer.write(out)
 
-            st.download_button("Download", out.getvalue(), "rotated.pdf", mime="application/pdf")
-
+            st.download_button("Download", out.getvalue(), "rotated.pdf")
 
 # ================= PDF COMPRESS =================
 elif menu == "PDF Compress":
@@ -335,13 +295,13 @@ elif menu == "PDF Compress":
     file = st.file_uploader("Upload PDF", type=["pdf"])
 
     quality_dict = {
-        "High Compression (Low Quality)": "/screen",
+        "High Compression": "/screen",
         "Medium Compression": "/ebook",
         "High Quality": "/printer",
-        "Almost Original": "/prepress"
+        "Original": "/prepress"
     }
 
-    quality = st.selectbox("Compression Quality", list(quality_dict.keys()))
+    quality = st.selectbox("Quality", list(quality_dict.keys()))
     gs_quality = quality_dict[quality]
 
     if file:
@@ -380,7 +340,7 @@ elif menu == "PDF Compress":
                     with open(outp, "rb") as f:
                         data = f.read()
 
-                    st.success("PDF compressed successfully")
+                    st.success("Compressed successfully")
 
                     st.download_button(
                         "Download",
@@ -391,4 +351,3 @@ elif menu == "PDF Compress":
 
                 except Exception as e:
                     st.error(f"Error: {e}")
-                    st.error("Install Ghostscript (gs)")
