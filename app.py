@@ -135,31 +135,38 @@ elif menu == "Images to PDF":
 # ================= PDF TO IMAGES =================
 elif menu == "PDF to Images":
 
-    file = st.file_uploader("Upload PDF")
+    file = st.file_uploader("Upload PDF", type=["pdf"])
 
     if file:
+
         pdf = fitz.open(stream=file.read(), filetype="pdf")
 
-        pages = st.multiselect("Pages", list(range(1, pdf.page_count + 1)))
-        fmt = st.selectbox("Format", ["png", "jpeg", "webp"])
+        total_pages = pdf.page_count
+        st.write(f"Total Pages: {total_pages}")
+
+        pages = st.multiselect("Select Pages", list(range(1, total_pages + 1)))
+
+        fmt = st.selectbox("Image Format", ["PNG", "JPEG", "WEBP"])
         zoom = st.slider("Zoom", 1, 3, 2)
 
-        if st.button("Convert"):
+        if pages:
 
-            zip_buffer = BytesIO()
+            if st.button("Convert"):
 
-            with zipfile.ZipFile(zip_buffer, "w") as zf:
                 for p in pages:
+
                     page = pdf[p - 1]
-                    pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom))
+                    mat = fitz.Matrix(zoom, zoom)
+                    pix = page.get_pixmap(matrix=mat)
 
-                    zf.writestr(
-                        f"page_{p}.{fmt}",
-                        pix.tobytes(fmt)
+                    img_bytes = pix.tobytes(fmt.lower())
+
+                    st.download_button(
+                        f"Download Page {p}",
+                        img_bytes,
+                        file_name=f"page_{p}.{fmt.lower()}",
+                        mime=f"image/{fmt.lower()}"
                     )
-
-            st.download_button("Download ZIP", zip_buffer.getvalue(), "pdf_images.zip")
-
 
 # ================= MERGE PDF =================
 elif menu == "Merge PDF":
