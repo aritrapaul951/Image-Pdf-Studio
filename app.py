@@ -10,7 +10,7 @@ from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
-    page_title="Image & PDF Studio",
+    page_title="Image & PDF Studio by Aritra Paul",
     page_icon="🖼️",
     layout="wide",
     initial_sidebar_state="expanded"
