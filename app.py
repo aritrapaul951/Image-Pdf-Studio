@@ -105,7 +105,7 @@ st.markdown("""
 
 
 # ================= SIDEBAR =================
-menu = st.sidebar.selectbox(
+menu = st.selectbox(
     "📂 Tools",
     [
         "Image Resize",
@@ -120,8 +120,8 @@ menu = st.sidebar.selectbox(
     ]
 )
 
-st.sidebar.markdown("---")
-st.sidebar.info("Fast • Clean • Professional File Tools")
+st.markdown("---")
+st.info("Fast • Clean • Professional File Tools")
 
 
 # ================= UI WRAPPER =================
