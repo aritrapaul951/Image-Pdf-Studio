@@ -18,28 +18,45 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* Hide default UI */
-#MainMenu, footer, header {visibility: hidden;}
+/* ================= HIDE DEFAULT UI ================= */
+#MainMenu, footer, header {
+    visibility: hidden;
+}
 
-/* Background */
+/* ================= APP BACKGROUND ================= */
 .stApp {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
 }
 
-/* Sidebar glass effect */
+/* ================= FIXED SIDEBAR ================= */
 section[data-testid="stSidebar"] {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(10px);
     border-right: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Main container */
-.block-container {
-    padding: 2rem 2rem;
+/* Sidebar text */
+section[data-testid="stSidebar"] * {
+    color: white;
 }
 
-/* Title */
+/* ================= MAIN CONTENT SHIFT ================= */
+.block-container {
+    margin-left: 320px;
+    max-width: calc(100% - 320px);
+    padding: 2rem;
+}
+
+/* ================= HEADER ================= */
 .main-title {
     font-size: 44px;
     font-weight: 800;
@@ -55,7 +72,7 @@ section[data-testid="stSidebar"] {
     margin-bottom: 30px;
 }
 
-/* Cards */
+/* ================= CARDS ================= */
 .card {
     background: rgba(255,255,255,0.06);
     padding: 20px;
@@ -64,8 +81,9 @@ section[data-testid="stSidebar"] {
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
 }
 
-/* Buttons */
-.stButton>button, .stDownloadButton>button {
+/* ================= BUTTONS ================= */
+.stButton>button,
+.stDownloadButton>button {
     width: 100%;
     border-radius: 10px;
     height: 3em;
@@ -81,42 +99,14 @@ section[data-testid="stSidebar"] {
     transform: scale(1.02);
 }
 
-/* File uploader */
+/* ================= FILE UPLOADER ================= */
 section[data-testid="stFileUploader"] {
     background: rgba(255,255,255,0.05);
     padding: 10px;
     border-radius: 12px;
 }
 
-/* Sidebar text */
-section[data-testid="stSidebar"] * {
-    color: white;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<style>
-
-/* FIXED SIDEBAR */
-section[data-testid="stSidebar"] {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 300px;
-    overflow-y: auto;
-    z-index: 1000;
-}
-
-/* MAIN CONTENT SHIFT (important) */
-.block-container {
-    margin-left: 320px;
-    max-width: calc(100% - 320px);
-}
-
-/* optional scrollbar style */
+/* ================= SCROLLBAR ================= */
 section[data-testid="stSidebar"]::-webkit-scrollbar {
     width: 6px;
 }
@@ -128,13 +118,6 @@ section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
 
 </style>
 """, unsafe_allow_html=True)
-
-# ================= HEADER =================
-st.markdown("""
-<div class="main-title">🖼️ Image & PDF Studio</div>
-<div class="sub-title">Professional File Processing Toolkit</div>
-""", unsafe_allow_html=True)
-
 
 # ================= SIDEBAR =================
 menu = st.sidebar.selectbox(
