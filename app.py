@@ -35,6 +35,7 @@ header {visibility: hidden;}
 st.markdown("<h1 style='text-align:center;'>🖼️ Image & PDF Studio</h1>", unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
+# ================= SIDEBAR =================
 menu = st.sidebar.selectbox(
     "📂 Select Tool",
     [
@@ -49,6 +50,24 @@ menu = st.sidebar.selectbox(
         "📉 PDF Compress"
     ]
 )
+
+st.sidebar.markdown("---")
+
+st.sidebar.info("""
+Available Tools:
+
+- Image Resize  
+- Image Compress  
+- Image Convert  
+- Images to PDF  
+- PDF to Images  
+- Merge PDF  
+- Split PDF  
+- Rotate PDF  
+- PDF Compress  
+""")
+
+
 
 # ================= MAIN LOGIC =================
 
