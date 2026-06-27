@@ -33,8 +33,16 @@ header {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 # ================= HEADER =================
-st.markdown("<h1 style='text-align:center;'>🖼️ Image & PDF Studio</h1>", unsafe_allow_html=True)
+#st.markdown("<h1 style='text-align:center;'>🖼️ Image & PDF Studio</h1>", unsafe_allow_html=True)
+st.markdown("""
+<div class="main-title">
+    🖼️ Image & PDF Studio 
+</div>
 
+<div class="sub-title">
+    Professional Image & PDF Processing Toolkit by Aritra Paul
+</div>
+""", unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
 menu = st.sidebar.selectbox(
