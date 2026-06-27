@@ -120,11 +120,8 @@ st.markdown("""
 
 
 # ================= SIDEBAR =================
-
-st.markdown("### 📂 Tools")
-
 menu = st.selectbox(
-    "",
+    "📂 Tools",
     [
         "Image Resize",
         "Image Compress",
@@ -137,6 +134,7 @@ menu = st.selectbox(
         "PDF Compress"
     ]
 )
+
 #st.markdown("---")
 st.info("Fast • Clean • Professional File Tools")
 
