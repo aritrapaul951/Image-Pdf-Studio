@@ -82,7 +82,7 @@ section[data-testid="stSidebar"] * {
 # ================= HEADER =================
 st.markdown("""
 <div class="main-title">
-    🖼️ Image & PDF Studio
+    🖼️ Image & PDF Studio 
 </div>
 
 <div class="sub-title">
@@ -91,7 +91,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
-st.sidebar.title("🖼️ Image & PDF Studio")
+st.sidebar.title("🖼️ Image & PDF Studio by Aritra Paul")
 st.sidebar.markdown("---")
 
 menu = st.sidebar.selectbox(
