@@ -212,7 +212,7 @@ elif menu == "📉 PDF Compress":
     pass
     # code
 # ================= IMAGE RESIZE =================
-if menu == "Image Resize":
+if menu == "🖼️ Image Resize":
 
     file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
 
