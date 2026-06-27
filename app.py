@@ -100,7 +100,7 @@ section[data-testid="stSidebar"] * {
 # ================= HEADER =================
 st.markdown("""
 <div class="main-title">🖼️ Image & PDF Studio</div>
-<div class="sub-title">Professional File Processing Toolkit</div>
+<div class="sub-title">Professional File Processing Toolkit by Aritra Paul</div>
 """, unsafe_allow_html=True)
 
 
@@ -120,7 +120,7 @@ menu = st.selectbox(
     ]
 )
 
-#st.markdown("---")
+st.markdown("---")
 st.info("Fast • Clean • Professional File Tools")
 
 
