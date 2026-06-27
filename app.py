@@ -1,168 +1,394 @@
+# app.py
+
 import streamlit as st
 from PIL import Image
 from io import BytesIO
 import zipfile
-import fitz
+import tempfile
+import subprocess
+import os
+import fitz  # PyMuPDF
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
-# ================= CONFIG =================
+
+# ================= PAGE CONFIG =================
 st.set_page_config(
     page_title="Image & PDF Studio",
     page_icon="🖼️",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="wide"
 )
 
-# ================= CSS =================
-st.markdown("""
-<style>
-#MainMenu {visibility:hidden;}
-footer {visibility:hidden;}
-header {visibility:hidden;}
-</style>
-""", unsafe_allow_html=True)
 
-# ================= SIDEBAR (FORCE ALWAYS LOAD) =================
-with st.sidebar:
-    st.title("🖼️ Image & PDF Studio")
+# ================= SESSION INIT =================
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-    menu = st.radio(
-        "Select Tool",
-        [
-            "Image Resize",
-            "Image Compress",
-            "Image Convert",
-            "Images to PDF",
-            "PDF to Images",
-            "Merge PDF",
-            "Split PDF",
-            "Rotate PDF",
-            "PDF Compress"
-        ]
-    )
+if "user" not in st.session_state:
+    st.session_state.user = None
 
-# ================= ROUTER =================
-def image_resize():
-    file = st.file_uploader("Upload Image")
+
+# ================= LOGIN SYSTEM =================
+def login_page():
+
+    st.title("🔐 Login")
+
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+
+        if username == "admin" and password == "1234":
+
+            st.session_state.logged_in = True
+            st.session_state.user = username
+            st.rerun()
+
+        else:
+            st.error("Invalid username or password")
+
+
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.user = None
+    st.rerun()
+
+
+# ================= AUTH GATE =================
+if not st.session_state.logged_in:
+    login_page()
+    st.stop()
+
+
+# ================= AFTER LOGIN =================
+st.sidebar.success(f"Logged in as {st.session_state.user}")
+
+if st.sidebar.button("Logout"):
+    logout()
+
+
+# ================= MENU =================
+menu = st.sidebar.selectbox(
+    "Select Tool",
+    [
+        "Image Resize",
+        "Image Compress",
+        "Image Convert",
+        "Images to PDF",
+        "PDF to Images",
+        "Merge PDF",
+        "Split PDF",
+        "Rotate PDF",
+        "PDF Compress"
+    ]
+)
+
+
+# ================= IMAGE RESIZE =================
+if menu == "Image Resize":
+
+    file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
+
     if file:
         img = Image.open(file)
-        w = st.number_input("Width", value=img.width)
-        h = st.number_input("Height", value=img.height)
+        st.image(img, caption="Original Image")
+
+        w = st.number_input("Width", min_value=1, value=img.width)
+        h = st.number_input("Height", min_value=1, value=img.height)
 
         if st.button("Resize"):
-            buf = BytesIO()
-            img.resize((int(w), int(h))).save(buf, "PNG")
-            st.download_button("Download", buf.getvalue(), "resized.png")
 
-def image_compress():
-    file = st.file_uploader("Upload Image")
+            img2 = img.resize((int(w), int(h)))
+
+            buf = BytesIO()
+
+            ext = file.name.split(".")[-1].upper()
+            if ext == "JPG":
+                ext = "JPEG"
+
+            img2.save(buf, format=ext)
+
+            st.image(img2, caption="Resized Image")
+
+            st.download_button(
+                "Download",
+                buf.getvalue(),
+                file_name=f"resized.{ext.lower()}"
+            )
+
+
+# ================= IMAGE COMPRESS =================
+elif menu == "Image Compress":
+
+    file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
+
     if file:
-        q = st.slider("Quality", 10, 100, 70)
+
+        img = Image.open(file)
+        quality = st.slider("Quality", 10, 100, 70)
 
         if st.button("Compress"):
-            buf = BytesIO()
-            Image.open(file).convert("RGB").save(buf, "JPEG", quality=q)
-            st.download_button("Download", buf.getvalue(), "compressed.jpg")
 
-def image_convert():
-    file = st.file_uploader("Upload Image")
+            buf = BytesIO()
+            img = img.convert("RGB")
+
+            img.save(buf, format="JPEG", quality=quality, optimize=True)
+
+            st.download_button(
+                "Download",
+                buf.getvalue(),
+                "compressed.jpg",
+                mime="image/jpeg"
+            )
+
+
+# ================= IMAGE CONVERT =================
+elif menu == "Image Convert":
+
+    file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
+
     if file:
-        fmt = st.selectbox("Format", ["PNG","JPEG","WEBP"])
+
+        img = Image.open(file)
+        fmt = st.selectbox("Output Format", ["PNG", "JPEG", "WEBP"])
 
         if st.button("Convert"):
+
             buf = BytesIO()
-            img = Image.open(file)
-            img.convert("RGB").save(buf, fmt)
-            st.download_button("Download", buf.getvalue(), f"out.{fmt.lower()}")
 
-def images_to_pdf():
-    files = st.file_uploader("Upload Images", accept_multiple_files=True)
+            if fmt == "JPEG":
+                img = img.convert("RGB")
+
+            img.save(buf, format=fmt)
+
+            st.download_button(
+                "Download",
+                buf.getvalue(),
+                f"converted.{fmt.lower()}"
+            )
+
+
+# ================= IMAGES TO PDF =================
+elif menu == "Images to PDF":
+
+    files = st.file_uploader(
+        "Upload Images",
+        type=["png", "jpg", "jpeg"],
+        accept_multiple_files=True
+    )
+
     if files and st.button("Create PDF"):
-        imgs = [Image.open(f).convert("RGB") for f in files]
-        buf = BytesIO()
-        imgs[0].save(buf, save_all=True, append_images=imgs[1:], format="PDF")
-        st.download_button("Download", buf.getvalue(), "images.pdf")
 
-def pdf_to_images():
-    file = st.file_uploader("Upload PDF")
+        images = []
+
+        for f in files:
+            img = Image.open(f).convert("RGB")
+            images.append(img)
+
+        pdf = BytesIO()
+        images[0].save(pdf, save_all=True, append_images=images[1:], format="PDF")
+
+        st.download_button(
+            "Download PDF",
+            pdf.getvalue(),
+            "images.pdf",
+            mime="application/pdf"
+        )
+
+
+# ================= PDF TO IMAGES =================
+elif menu == "PDF to Images":
+
+    file = st.file_uploader("Upload PDF", type=["pdf"])
+
     if file:
+
         pdf = fitz.open(stream=file.read(), filetype="pdf")
-        pages = st.multiselect("Pages", list(range(1, pdf.page_count+1)))
 
-        if pages and st.button("Convert"):
-            zip_buf = BytesIO()
-            with zipfile.ZipFile(zip_buf, "w") as zf:
+        total_pages = pdf.page_count
+        st.write(f"Total Pages: {total_pages}")
+
+        pages = st.multiselect(
+            "Select Pages",
+            list(range(1, total_pages + 1))
+        )
+
+        fmt = st.selectbox("Image Format", ["PNG", "JPEG", "WEBP"])
+        zoom = st.slider("Quality (Zoom)", 1, 3, 2)
+
+        if st.button("Convert"):
+
+            if not pages:
+                st.warning("Select pages first")
+                st.stop()
+
+            zip_buffer = BytesIO()
+
+            with zipfile.ZipFile(zip_buffer, "w") as zf:
+
                 for p in pages:
-                    pix = pdf[p-1].get_pixmap()
-                    zf.writestr(f"page_{p}.png", pix.tobytes("png"))
 
-            st.download_button("Download ZIP", zip_buf.getvalue(), "pages.zip")
+                    page = pdf[p - 1]
 
-def merge_pdf():
-    files = st.file_uploader("Upload PDFs", accept_multiple_files=True)
+                    mat = fitz.Matrix(zoom, zoom)
+                    pix = page.get_pixmap(matrix=mat)
+
+                    img_bytes = pix.tobytes(fmt.lower())
+
+                    zf.writestr(
+                        f"page_{p}.{fmt.lower()}",
+                        img_bytes
+                    )
+
+            zip_buffer.seek(0)
+
+            st.download_button(
+                "Download ZIP",
+                zip_buffer.getvalue(),
+                file_name="pdf_images.zip",
+                mime="application/zip"
+            )
+
+
+# ================= MERGE PDF =================
+elif menu == "Merge PDF":
+
+    files = st.file_uploader(
+        "Upload PDFs",
+        type=["pdf"],
+        accept_multiple_files=True
+    )
+
     if files and st.button("Merge"):
+
         merger = PdfMerger()
+
         for f in files:
             merger.append(f)
+
         out = BytesIO()
         merger.write(out)
-        st.download_button("Download", out.getvalue(), "merged.pdf")
+        merger.close()
 
-def split_pdf():
-    file = st.file_uploader("Upload PDF")
-    if file and st.button("Split"):
-        reader = PdfReader(file)
-        zip_buf = BytesIO()
+        st.download_button("Download", out.getvalue(), "merged.pdf", mime="application/pdf")
 
-        with zipfile.ZipFile(zip_buf, "w") as zf:
-            for i, p in enumerate(reader.pages):
-                w = PdfWriter()
-                w.add_page(p)
-                b = BytesIO()
-                w.write(b)
-                zf.writestr(f"page_{i+1}.pdf", b.getvalue())
 
-        st.download_button("Download", zip_buf.getvalue(), "split.zip")
+# ================= SPLIT PDF =================
+elif menu == "Split PDF":
 
-def rotate_pdf():
-    file = st.file_uploader("Upload PDF")
+    file = st.file_uploader("Upload PDF", type=["pdf"])
+
     if file:
-        angle = st.selectbox("Angle", [90,180,270])
+
+        reader = PdfReader(file)
+
+        if st.button("Split"):
+
+            zip_buffer = BytesIO()
+
+            with zipfile.ZipFile(zip_buffer, "w") as zf:
+
+                for i, page in enumerate(reader.pages):
+
+                    writer = PdfWriter()
+                    writer.add_page(page)
+
+                    pdf_bytes = BytesIO()
+                    writer.write(pdf_bytes)
+
+                    zf.writestr(f"page_{i+1}.pdf", pdf_bytes.getvalue())
+
+            st.download_button(
+                "Download ZIP",
+                zip_buffer.getvalue(),
+                "pages.zip",
+                mime="application/zip"
+            )
+
+
+# ================= ROTATE PDF =================
+elif menu == "Rotate PDF":
+
+    file = st.file_uploader("Upload PDF", type=["pdf"])
+
+    if file:
+
+        angle = st.selectbox("Angle", [90, 180, 270])
 
         if st.button("Rotate"):
-            r = PdfReader(file)
-            w = PdfWriter()
 
-            for p in r.pages:
-                p.rotate(angle)
-                w.add_page(p)
+            reader = PdfReader(file)
+            writer = PdfWriter()
+
+            for page in reader.pages:
+                page.rotate(angle)
+                writer.add_page(page)
 
             out = BytesIO()
-            w.write(out)
-            st.download_button("Download", out.getvalue(), "rotated.pdf")
+            writer.write(out)
 
-def pdf_compress():
-    file = st.file_uploader("Upload PDF")
-    if file:
-        st.info(f"Size: {len(file.getvalue())/1024/1024:.2f} MB")
-        st.warning("Ghostscript required")
+            st.download_button("Download", out.getvalue(), "rotated.pdf", mime="application/pdf")
 
-# ================= MAIN ROUTER =================
-if menu == "Image Resize":
-    image_resize()
-elif menu == "Image Compress":
-    image_compress()
-elif menu == "Image Convert":
-    image_convert()
-elif menu == "Images to PDF":
-    images_to_pdf()
-elif menu == "PDF to Images":
-    pdf_to_images()
-elif menu == "Merge PDF":
-    merge_pdf()
-elif menu == "Split PDF":
-    split_pdf()
-elif menu == "Rotate PDF":
-    rotate_pdf()
+
+# ================= PDF COMPRESS =================
 elif menu == "PDF Compress":
-    pdf_compress()
+
+    file = st.file_uploader("Upload PDF", type=["pdf"])
+
+    quality_dict = {
+        "High Compression (Low Quality)": "/screen",
+        "Medium Compression": "/ebook",
+        "High Quality": "/printer",
+        "Almost Original": "/prepress"
+    }
+
+    quality = st.selectbox("Compression Quality", list(quality_dict.keys()))
+    gs_quality = quality_dict[quality]
+
+    if file:
+
+        original_size = len(file.getvalue()) / 1024 / 1024
+        st.info(f"Original Size: {original_size:.2f} MB")
+
+        if st.button("Compress PDF"):
+
+            with tempfile.TemporaryDirectory() as tmp:
+
+                inp = os.path.join(tmp, "in.pdf")
+                outp = os.path.join(tmp, "out.pdf")
+
+                with open(inp, "wb") as f:
+                    f.write(file.getvalue())
+
+                cmd = [
+                    "gs",
+                    "-sDEVICE=pdfwrite",
+                    "-dCompatibilityLevel=1.4",
+                    f"-dPDFSETTINGS={gs_quality}",
+                    "-dNOPAUSE",
+                    "-dQUIET",
+                    "-dBATCH",
+                    f"-sOutputFile={outp}",
+                    inp
+                ]
+
+                if os.name == "nt":
+                    cmd[0] = "gswin64c"
+
+                try:
+                    subprocess.run(cmd, check=True)
+
+                    with open(outp, "rb") as f:
+                        data = f.read()
+
+                    st.success("PDF compressed successfully")
+
+                    st.download_button(
+                        "Download",
+                        data,
+                        "compressed.pdf",
+                        mime="application/pdf"
+                    )
+
+                except Exception as e:
+                    st.error(f"Error: {e}")
+                    st.error("Install Ghostscript (gs)")
