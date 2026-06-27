@@ -36,17 +36,7 @@ section[data-testid="stSidebar"] {
 
 /* Main container */
 .block-container {
-    padding: 1.2rem 1.5rem !important;
-}
-
-/* REMOVE EXTRA GAP (MAIN FIX) */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.6rem;
-}
-
-/* Reduce element spacing */
-.element-container {
-    margin-bottom: 0.3rem !important;
+    padding: 2rem 2rem;
 }
 
 /* Title */
@@ -62,13 +52,13 @@ div[data-testid="stVerticalBlock"] {
     text-align: center;
     color: #cbd5e1;
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 /* Cards */
 .card {
     background: rgba(255,255,255,0.06);
-    padding: 18px;
+    padding: 20px;
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
@@ -96,7 +86,11 @@ section[data-testid="stFileUploader"] {
     background: rgba(255,255,255,0.05);
     padding: 10px;
     border-radius: 12px;
-    margin-top: 0px !important;
+}
+
+/* Sidebar text */
+section[data-testid="stSidebar"] * {
+    color: white;
 }
 
 </style>
@@ -106,7 +100,7 @@ section[data-testid="stFileUploader"] {
 # ================= HEADER =================
 st.markdown("""
 <div class="main-title">🖼️ Image & PDF Studio</div>
-<div class="sub-title">Professional File Processing Toolkit</div>
+<div class="sub-title">Professional File Processing Toolkit by Aritra Paul</div>
 """, unsafe_allow_html=True)
 
 
@@ -125,6 +119,14 @@ menu = st.selectbox(
         "PDF Compress"
     ]
 )
+
+#st.markdown("---")
+#st.info("Fast • Clean • Professional File Tools")
+
+
+# ================= UI WRAPPER =================
+#def card():
+#    st.markdown('<div class="card">', unsafe_allow_html=True)
 
 
 # ================= IMAGE RESIZE =================
@@ -148,6 +150,7 @@ if menu == "Image Resize":
             img2.save(buf, format="PNG")
 
             st.image(img2, use_container_width=True)
+
             st.download_button("Download", buf.getvalue(), "resized.png")
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -334,3 +337,7 @@ elif menu == "PDF Compress":
         st.warning("Ghostscript required for compression")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+
+
