@@ -98,26 +98,41 @@ st.markdown(
 )
 
 # ================= SIDEBAR =================
-st.sidebar.image(
-    "https://cdn-icons-png.flaticon.com/512/337/337946.png",
-    width=120
+st.sidebar.title("🖼️ Image & PDF Studio")
+st.sidebar.markdown("---")
+
+menu = st.sidebar.selectbox(
+    "📂 Select Tool",
+    (
+        "🖼️ Image Resize",
+        "🗜️ Image Compress",
+        "🔄 Image Convert",
+        "📄 Images to PDF",
+        "🖼️ PDF to Images",
+        "📑 Merge PDF",
+        "✂️ Split PDF",
+        "🔃 Rotate PDF",
+        "📉 PDF Compress"
+    )
 )
 
-st.sidebar.title("📂 Tools")
-
+st.sidebar.markdown("---")
 st.sidebar.info(
     """
-    ✔ Image Resize  
-    ✔ Image Compress  
-    ✔ Image Convert  
-    ✔ Images to PDF  
-    ✔ PDF to Images  
-    ✔ Merge PDF  
-    ✔ Split PDF  
-    ✔ Rotate PDF  
-    ✔ PDF Compress
+    **Available Tools**
+
+    🖼️ Image Resize  
+    🗜️ Image Compress  
+    🔄 Image Convert  
+    📄 Images to PDF  
+    🖼️ PDF to Images  
+    📑 Merge PDF  
+    ✂️ Split PDF  
+    🔃 Rotate PDF  
+    📉 PDF Compress
     """
 )
+
 # ================= SESSION INIT =================
 #if "logged_in" not in st.session_state:
 #    st.session_state.logged_in = False
@@ -168,21 +183,7 @@ st.sidebar.info(
 #    logout()
 
 
-# ================= MENU =================
-menu = st.sidebar.selectbox(
-    "Choose Tool",
-    [
-        "🖼️ Image Resize",
-        "🗜️ Image Compress",
-        "🔄 Image Convert",
-        "📄 Images to PDF",
-        "🖼️ PDF to Images",
-        "📑 Merge PDF",
-        "✂️ Split PDF",
-        "🔃 Rotate PDF",
-        "📉 PDF Compress"
-    ]
-)
+
 if menu == "🖼️ Image Resize":
     # code
 
