@@ -98,20 +98,7 @@ section[data-testid="stSidebar"] * {
 
 
 
-/* REMOVE TOP GAP BELOW HEADER + SELECTBOX */
-div[data-testid="stSelectbox"] {
-    margin-bottom: 0px !important;
-}
 
-/* REMOVE EXTRA SPACE ABOVE FIRST WIDGET */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.4rem !important;
-}
-
-/* tighten first uploader spacing */
-section[data-testid="stFileUploader"] {
-    margin-top: -10px !important;
-}
 # ================= HEADER =================
 st.markdown("""
 <div class="main-title">🖼️ Image & PDF Studio</div>
