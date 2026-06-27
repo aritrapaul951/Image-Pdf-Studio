@@ -9,60 +9,60 @@ import fitz
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 # ================= PAGE CONFIG =================
-st.set_page_config(
-    page_title="Image & PDF Studio",
-    page_icon="🖼️",
-    layout="wide"
-)
+#st.set_page_config(
+#    page_title="Image & PDF Studio",
+#    page_icon="🖼️",
+#    layout="wide"
+#)
 
 # ================= SESSION INIT =================
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-
-if "user" not in st.session_state:
-    st.session_state.user = ""
+#if "logged_in" not in st.session_state:
+#    st.session_state.logged_in = False
+#
+#if "user" not in st.session_state:
+#    st.session_state.user = ""
 
 
 # ================= LOGIN PAGE =================
-def login_page():
+#def login_page():
 
-    st.title("🔐 Login System")
+#    st.title("🔐 Login System")
 
-    username = st.text_input("Username", key="login_user")
-    password = st.text_input("Password", type="password", key="login_pass")
+#    username = st.text_input("Username", key="login_user")
+#    password = st.text_input("Password", type="password", key="login_pass")
 
-    if st.button("Login"):
+#    if st.button("Login"):
 
-        if username.strip() == "admin" and password.strip() == "1234":
+#        if username.strip() == "admin" and password.strip() == "1234":
 
-            st.session_state.logged_in = True
-            st.session_state.user = username
+#            st.session_state.logged_in = True
+#            st.session_state.user = username
 
-            st.success("Login successful")
-            st.rerun()
+#            st.success("Login successful")
+#            st.rerun()
 
-        else:
-            st.error("Invalid username or password")
+#        else:
+#            st.error("Invalid username or password")
 
 
 # ================= LOGOUT =================
-def logout():
-    st.session_state.logged_in = False
-    st.session_state.user = ""
-    st.rerun()
+#def logout():
+#    st.session_state.logged_in = False
+#    st.session_state.user = ""
+#    st.rerun()
 
 
 # ================= AUTH GATE =================
-if not st.session_state.logged_in:
-    login_page()
-    st.stop()
+#if not st.session_state.logged_in:
+#    login_page()
+#    st.stop()
 
 
 # ================= AFTER LOGIN =================
-st.sidebar.success(f"Logged in as {st.session_state.user}")
+#st.sidebar.success(f"Logged in as {st.session_state.user}")
 
-if st.sidebar.button("Logout"):
-    logout()
+#if st.sidebar.button("Logout"):
+#    logout()
 
 
 # ================= MENU =================
