@@ -185,30 +185,31 @@ st.sidebar.info("""
 
 
 if menu == "🖼️ Image Resize":
-    # code
+    pass
 
 elif menu == "🗜️ Image Compress":
-    # code
+    pass
 
 elif menu == "🔄 Image Convert":
-    # code
+    pass
 
 elif menu == "📄 Images to PDF":
-    # code
+    pass
 
 elif menu == "🖼️ PDF to Images":
-    # code
+    pass
 
 elif menu == "📑 Merge PDF":
-    # code
+    pass
 
 elif menu == "✂️ Split PDF":
-    # code
+    pass
 
 elif menu == "🔃 Rotate PDF":
-    # code
+    pass
 
 elif menu == "📉 PDF Compress":
+    pass
     # code
 # ================= IMAGE RESIZE =================
 if menu == "Image Resize":
