@@ -2,9 +2,6 @@ import streamlit as st
 from PIL import Image
 from io import BytesIO
 import zipfile
-import tempfile
-import subprocess
-import os
 import fitz
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
@@ -24,20 +21,23 @@ footer {visibility: hidden;}
 header {visibility: hidden;}
 
 .block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding: 2rem;
     max-width: 1400px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ================= HEADER =================
-st.markdown("<h1 style='text-align:center;'>🖼️ Image & PDF Studio</h1>", unsafe_allow_html=True)
+st.markdown("""
+<h1 style='text-align:center;'>🖼️ Image & PDF Studio</h1>
+<p style='text-align:center;color:gray;'>Professional Image & PDF Toolkit</p>
+""", unsafe_allow_html=True)
 
 # ================= SIDEBAR =================
-# ================= SIDEBAR =================
-menu = st.sidebar.selectbox(
-    "📂 Select Tool",
+st.sidebar.title("📂 Tools Menu")
+
+menu = st.sidebar.radio(
+    "Select Tool",
     [
         "🖼️ Image Resize",
         "🗜️ Image Compress",
@@ -52,46 +52,41 @@ menu = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
+st.sidebar.info("Image & PDF Processing Suite")
 
-st.sidebar.info("""
-Available Tools:
+# ================= FUNCTIONS =================
+def get_image_bytes(img, fmt="PNG", quality=90):
+    buf = BytesIO()
+    if fmt == "JPEG":
+        img = img.convert("RGB")
+        img.save(buf, fmt, quality=quality)
+    else:
+        img.save(buf, fmt)
+    return buf.getvalue()
 
-- Image Resize  
-- Image Compress  
-- Image Convert  
-- Images to PDF  
-- PDF to Images  
-- Merge PDF  
-- Split PDF  
-- Rotate PDF  
-- PDF Compress  
-""")
-
-
-
-# ================= MAIN LOGIC =================
-
-# ---------------- IMAGE RESIZE ----------------
+# ================= IMAGE RESIZE =================
 if menu == "🖼️ Image Resize":
 
-    file = st.file_uploader("Upload Image")
+    file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
 
     if file:
         img = Image.open(file)
-        st.image(img)
+        st.image(img, use_container_width=True)
 
         w = st.number_input("Width", value=img.width)
         h = st.number_input("Height", value=img.height)
 
         if st.button("Resize"):
-            img2 = img.resize((int(w), int(h)))
+            resized = img.resize((int(w), int(h)))
+            st.image(resized)
 
-            buf = BytesIO()
-            img2.save(buf, format="PNG")
+            st.download_button(
+                "Download",
+                get_image_bytes(resized, "PNG"),
+                "resized.png"
+            )
 
-            st.download_button("Download", buf.getvalue(), "resized.png")
-
-# ---------------- IMAGE COMPRESS ----------------
+# ================= IMAGE COMPRESS =================
 elif menu == "🗜️ Image Compress":
 
     file = st.file_uploader("Upload Image")
@@ -101,12 +96,13 @@ elif menu == "🗜️ Image Compress":
         q = st.slider("Quality", 10, 100, 70)
 
         if st.button("Compress"):
-            buf = BytesIO()
-            img.convert("RGB").save(buf, "JPEG", quality=q)
+            st.download_button(
+                "Download",
+                get_image_bytes(img, "JPEG", q),
+                "compressed.jpg"
+            )
 
-            st.download_button("Download", buf.getvalue(), "compressed.jpg")
-
-# ---------------- IMAGE CONVERT ----------------
+# ================= IMAGE CONVERT =================
 elif menu == "🔄 Image Convert":
 
     file = st.file_uploader("Upload Image")
@@ -116,12 +112,13 @@ elif menu == "🔄 Image Convert":
         fmt = st.selectbox("Format", ["PNG", "JPEG", "WEBP"])
 
         if st.button("Convert"):
-            buf = BytesIO()
-            img.convert("RGB").save(buf, fmt)
+            st.download_button(
+                "Download",
+                get_image_bytes(img, fmt),
+                f"output.{fmt.lower()}"
+            )
 
-            st.download_button("Download", buf.getvalue(), f"output.{fmt.lower()}")
-
-# ---------------- IMAGES TO PDF ----------------
+# ================= IMAGES TO PDF =================
 elif menu == "📄 Images to PDF":
 
     files = st.file_uploader("Upload Images", accept_multiple_files=True)
@@ -134,7 +131,7 @@ elif menu == "📄 Images to PDF":
 
         st.download_button("Download PDF", pdf.getvalue(), "images.pdf")
 
-# ---------------- PDF TO IMAGES ----------------
+# ================= PDF TO IMAGES =================
 elif menu == "🖼️ PDF to Images":
 
     file = st.file_uploader("Upload PDF")
@@ -152,15 +149,13 @@ elif menu == "🖼️ PDF to Images":
                 page = pdf[p - 1]
                 pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom))
 
-                img_bytes = pix.tobytes(fmt)
-
                 st.download_button(
                     f"Download Page {p}",
-                    img_bytes,
-                    file_name=f"page_{p}.{fmt}"
+                    pix.tobytes(fmt),
+                    f"page_{p}.{fmt}"
                 )
 
-# ---------------- MERGE PDF ----------------
+# ================= MERGE PDF =================
 elif menu == "📑 Merge PDF":
 
     files = st.file_uploader("Upload PDFs", accept_multiple_files=True)
@@ -176,7 +171,7 @@ elif menu == "📑 Merge PDF":
 
         st.download_button("Download", out.getvalue(), "merged.pdf")
 
-# ---------------- SPLIT PDF ----------------
+# ================= SPLIT PDF =================
 elif menu == "✂️ Split PDF":
 
     file = st.file_uploader("Upload PDF")
@@ -199,7 +194,7 @@ elif menu == "✂️ Split PDF":
 
             st.download_button("Download ZIP", zip_buffer.getvalue(), "pages.zip")
 
-# ---------------- ROTATE PDF ----------------
+# ================= ROTATE PDF =================
 elif menu == "🔃 Rotate PDF":
 
     file = st.file_uploader("Upload PDF")
@@ -220,13 +215,11 @@ elif menu == "🔃 Rotate PDF":
 
             st.download_button("Download", out.getvalue(), "rotated.pdf")
 
-# ---------------- PDF COMPRESS ----------------
+# ================= PDF COMPRESS =================
 elif menu == "📉 PDF Compress":
 
     file = st.file_uploader("Upload PDF")
 
     if file:
         st.info(f"Size: {len(file.getvalue())/1024/1024:.2f} MB")
-
-        if st.button("Compress"):
-            st.warning("Ghostscript required on server")
+        st.warning("Ghostscript required for compression")
