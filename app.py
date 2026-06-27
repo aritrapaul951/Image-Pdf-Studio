@@ -120,8 +120,8 @@ menu = st.selectbox(
     ]
 )
 
-st.markdown("---")
-st.info("Fast • Clean • Professional File Tools")
+#st.markdown("---")
+#st.info("Fast • Clean • Professional File Tools")
 
 
 # ================= UI WRAPPER =================
