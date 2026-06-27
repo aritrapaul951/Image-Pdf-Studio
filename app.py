@@ -240,7 +240,7 @@ if menu == "🖼️ Image Resize":
             )
 
 # ================= IMAGE COMPRESS =================
-elif menu == "Image Compress":
+elif menu == "🗜️ Image Compress":
 
     file = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
 
@@ -262,7 +262,7 @@ elif menu == "Image Compress":
             )
 
 # ================= IMAGE CONVERT =================
-elif menu == "Image Convert":
+elif menu == "🔄 Image Convert":
 
     file = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg", "webp"])
 
@@ -285,7 +285,7 @@ elif menu == "Image Convert":
             )
 
 # ================= IMAGES TO PDF =================
-elif menu == "Images to PDF":
+elif menu == "📄 Images to PDF":
 
     files = st.file_uploader(
         "Upload Images",
@@ -308,7 +308,7 @@ elif menu == "Images to PDF":
         )
 
 # ================= PDF TO IMAGES =================
-elif menu == "PDF to Images":
+elif menu == "🖼️ PDF to Images":
 
     file = st.file_uploader("Upload PDF", type=["pdf"])
 
@@ -343,7 +343,7 @@ elif menu == "PDF to Images":
                         mime=f"image/{fmt.lower()}"
                     )
 # ================= MERGE PDF =================
-elif menu == "Merge PDF":
+elif menu == "📑 Merge PDF":
 
     files = st.file_uploader("Upload PDFs", type=["pdf"], accept_multiple_files=True)
 
@@ -361,7 +361,7 @@ elif menu == "Merge PDF":
         st.download_button("Download", out.getvalue(), "merged.pdf")
 
 # ================= SPLIT PDF =================
-elif menu == "Split PDF":
+elif menu == "✂️ Split PDF":
 
     file = st.file_uploader("Upload PDF", type=["pdf"])
 
@@ -392,7 +392,7 @@ elif menu == "Split PDF":
             )
 
 # ================= ROTATE PDF =================
-elif menu == "Rotate PDF":
+elif menu == "🔃 Rotate PDF":
 
     file = st.file_uploader("Upload PDF", type=["pdf"])
 
@@ -415,7 +415,7 @@ elif menu == "Rotate PDF":
             st.download_button("Download", out.getvalue(), "rotated.pdf")
 
 # ================= PDF COMPRESS =================
-elif menu == "PDF Compress":
+elif menu == "📉 PDF Compress":
 
     file = st.file_uploader("Upload PDF", type=["pdf"])
 
