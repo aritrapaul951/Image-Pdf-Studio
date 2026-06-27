@@ -18,30 +18,74 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== GLOBAL ===== */
-#MainMenu, footer, header {
-    visibility: hidden;
-}
+/* Hide default UI */
+#MainMenu, footer, header {visibility: hidden;}
 
-/* ===== APP BACKGROUND ===== */
+/* Background */
 .stApp {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
 }
 
-/* ===== FIXED SIDEBAR ===== */
+/* Sidebar glass effect */
 section[data-testid="stSidebar"] {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 300px;
-    overflow-y: auto;
-    z-index: 9999;
-
     background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Main container */
+.block-container {
+    padding: 2rem 2rem;
+}
+
+/* Title */
+.main-title {
+    font-size: 44px;
+    font-weight: 800;
+    text-align: center;
+    color: #60a5fa;
+    margin-bottom: 5px;
+}
+
+.sub-title {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.06);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* Buttons */
+.stButton>button, .stDownloadButton>button {
+    width: 100%;
+    border-radius: 10px;
+    height: 3em;
+    font-weight: 600;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+
+.stButton>button:hover {
+    background: #2563eb;
+    transform: scale(1.02);
+}
+
+/* File uploader */
+section[data-testid="stFileUploader"] {
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 12px;
 }
 
 /* Sidebar text */
@@ -49,24 +93,14 @@ section[data-testid="stSidebar"] * {
     color: white;
 }
 
-/* ===== MAIN CONTENT SHIFT ===== */
-.block-container {
-    margin-left: 320px;
-    padding: 2rem 2rem;
-    max-width: calc(100% - 320px);
-}
-
-/* ===== SCROLLBAR (optional) ===== */
-section[data-testid="stSidebar"]::-webkit-scrollbar {
-    width: 6px;
-}
-
-section[data-testid="stSidebar"]::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 10px;
-}
-
 </style>
+""", unsafe_allow_html=True)
+
+
+# ================= HEADER =================
+st.markdown("""
+<div class="main-title">🖼️ Image & PDF Studio</div>
+<div class="sub-title">Professional File Processing Toolkit</div>
 """, unsafe_allow_html=True)
 
 
