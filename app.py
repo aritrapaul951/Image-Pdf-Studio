@@ -125,8 +125,8 @@ menu = st.selectbox(
 
 
 # ================= UI WRAPPER =================
-def card():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
+#def card():
+#    st.markdown('<div class="card">', unsafe_allow_html=True)
 
 
 # ================= IMAGE RESIZE =================
