@@ -183,7 +183,32 @@ menu = st.sidebar.selectbox(
         "📉 PDF Compress"
     ]
 )
+if menu == "🖼️ Image Resize":
+    # code
 
+elif menu == "🗜️ Image Compress":
+    # code
+
+elif menu == "🔄 Image Convert":
+    # code
+
+elif menu == "📄 Images to PDF":
+    # code
+
+elif menu == "🖼️ PDF to Images":
+    # code
+
+elif menu == "📑 Merge PDF":
+    # code
+
+elif menu == "✂️ Split PDF":
+    # code
+
+elif menu == "🔃 Rotate PDF":
+    # code
+
+elif menu == "📉 PDF Compress":
+    # code
 # ================= IMAGE RESIZE =================
 if menu == "Image Resize":
 
