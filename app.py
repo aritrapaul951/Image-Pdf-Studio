@@ -9,12 +9,115 @@ import fitz
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 # ================= PAGE CONFIG =================
+#st.set_page_config(
+#    page_title="Image & PDF Studio",
+#    page_icon="🖼️",
+#    layout="wide"
+#)
+# ================= PAGE CONFIG =================
 st.set_page_config(
     page_title="Image & PDF Studio",
     page_icon="🖼️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
+# ================= CUSTOM CSS =================
+st.markdown("""
+<style>
+
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
+
+.block-container{
+    padding-top:2rem;
+    padding-bottom:2rem;
+    max-width:1400px;
+}
+
+.main-title{
+    font-size:42px;
+    font-weight:700;
+    text-align:center;
+    color:#2563eb;
+    margin-bottom:5px;
+}
+
+.sub-title{
+    text-align:center;
+    color:#6b7280;
+    font-size:18px;
+    margin-bottom:30px;
+}
+
+.tool-box{
+    background-color:#ffffff;
+    padding:25px;
+    border-radius:15px;
+    border:1px solid #e5e7eb;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.08);
+}
+
+.stButton>button{
+    width:100%;
+    border-radius:10px;
+    height:3em;
+    font-weight:bold;
+}
+
+.stDownloadButton>button{
+    width:100%;
+    border-radius:10px;
+    height:3em;
+    font-weight:bold;
+}
+
+section[data-testid="stSidebar"]{
+    background-color:#0f172a;
+}
+
+section[data-testid="stSidebar"] *{
+    color:white;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ================= HEADER =================
+st.markdown(
+    """
+    <div class='main-title'>
+        🖼️ Image & PDF Studio
+    </div>
+    <div class='sub-title'>
+        Professional Image & PDF Processing Toolkit
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# ================= SIDEBAR =================
+st.sidebar.image(
+    "https://cdn-icons-png.flaticon.com/512/337/337946.png",
+    width=120
+)
+
+st.sidebar.title("📂 Tools")
+
+st.sidebar.info(
+    """
+    ✔ Image Resize  
+    ✔ Image Compress  
+    ✔ Image Convert  
+    ✔ Images to PDF  
+    ✔ PDF to Images  
+    ✔ Merge PDF  
+    ✔ Split PDF  
+    ✔ Rotate PDF  
+    ✔ PDF Compress
+    """
+)
 # ================= SESSION INIT =================
 #if "logged_in" not in st.session_state:
 #    st.session_state.logged_in = False
@@ -67,17 +170,17 @@ st.set_page_config(
 
 # ================= MENU =================
 menu = st.sidebar.selectbox(
-    "Select Tool",
+    "Choose Tool",
     [
-        "Image Resize",
-        "Image Compress",
-        "Image Convert",
-        "Images to PDF",
-        "PDF to Images",
-        "Merge PDF",
-        "Split PDF",
-        "Rotate PDF",
-        "PDF Compress"
+        "🖼️ Image Resize",
+        "🗜️ Image Compress",
+        "🔄 Image Convert",
+        "📄 Images to PDF",
+        "🖼️ PDF to Images",
+        "📑 Merge PDF",
+        "✂️ Split PDF",
+        "🔃 Rotate PDF",
+        "📉 PDF Compress"
     ]
 )
 
